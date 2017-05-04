@@ -3,6 +3,12 @@
 # CFLAGS_<file.o> := -Wno-error
 subdir-ccflags-y := -Werror
 
+# clang's preprocessor will emit -Wunicode warnings for some .macro's because
+# they use '\u' as arguments.
+# This disables that warning for both gcc and clang, as Unicode characters are
+# not used in MIPS assembly code.
+subdir-asflags-y := -Wno-unicode
+
 # platform specific definitions
 include arch/mips/Kbuild.platforms
 obj-y := $(platform-y)
