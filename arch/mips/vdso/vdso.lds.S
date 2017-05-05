@@ -11,12 +11,23 @@
 #include <asm/sgidefs.h>
 
 #if _MIPS_SIM == _MIPS_SIM_ABI64
-OUTPUT_FORMAT("elf64-tradlittlemips", "elf64-tradbigmips", "elf64-tradlittlemips")
+#define BIG_ENDIAN_FORMAT    "elf64-tradbigmips"
+#define LITTLE_ENDIAN_FORMAT "elf64-tradlittlemips"
 #elif _MIPS_SIM == _MIPS_SIM_NABI32
-OUTPUT_FORMAT("elf32-ntradlittlemips", "elf32-ntradbigmips", "elf32-ntradlittlemips")
+#define BIG_ENDIAN_FORMAT    "elf32-ntradbigmips"
+#define LITTLE_ENDIAN_FORMAT "elf32-ntradlittlemips"
 #else
-OUTPUT_FORMAT("elf32-tradlittlemips", "elf32-tradbigmips", "elf32-tradlittlemips")
+#define BIG_ENDIAN_FORMAT    "elf32-tradbigmips"
+#define LITTLE_ENDIAN_FORMAT "elf32-tradlittlemips"
 #endif
+
+#if __MIPSEB__
+#define DEFAULT_FORMAT BIG_ENDIAN_FORMAT
+#else
+#define DEFAULT_FORMAT LITTLE_ENDIAN_FORMAT
+#endif
+
+OUTPUT_FORMAT(DEFAULT_FORMAT, BIG_ENDIAN_FORMAT, LITTLE_ENDIAN_FORMAT)
 
 OUTPUT_ARCH(mips)
 

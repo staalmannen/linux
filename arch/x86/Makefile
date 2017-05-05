@@ -145,6 +145,8 @@ ifeq ($(CONFIG_KMEMCHECK),y)
 	KBUILD_CFLAGS += $(call cc-option,-fno-builtin-memcpy)
 endif
 
+ifneq ($(COMPILER),clang)
+
 #
 # If the function graph tracer is used with mcount instead of fentry,
 # '-maccumulate-outgoing-args' is needed to prevent a GCC bug
@@ -184,6 +186,9 @@ ifeq ($(ACCUMULATE_OUTGOING_ARGS), 1)
 	KBUILD_CFLAGS += -maccumulate-outgoing-args
 endif
 
+#compiler clang
+endif
+
 # Stackpointer is addressed different for 32 bit and 64 bit x86
 sp-$(CONFIG_X86_32) := esp
 sp-$(CONFIG_X86_64) := rsp
@@ -213,7 +218,6 @@ LDFLAGS := -m elf_$(UTS_MACHINE)
 KBUILD_CFLAGS += -pipe
 # Workaround for a gcc prelease that unfortunately was shipped in a suse release
 KBUILD_CFLAGS += -Wno-sign-compare
-#
 KBUILD_CFLAGS += -fno-asynchronous-unwind-tables
 
 KBUILD_CFLAGS += $(mflags-y)
