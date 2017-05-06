@@ -87,11 +87,13 @@ else
         KBUILD_AFLAGS += -m64
         KBUILD_CFLAGS += -m64
 
+ifneq ($(cc-name),clang)
         # Align jump targets to 1 byte, not the default 16 bytes:
         KBUILD_CFLAGS += $(call cc-option,-falign-jumps=1)
 
         # Pack loops tightly as well:
         KBUILD_CFLAGS += $(call cc-option,-falign-loops=1)
+endif
 
         # Don't autogenerate traditional x87 instructions
         KBUILD_CFLAGS += $(call cc-option,-mno-80387)
@@ -143,6 +145,7 @@ ifeq ($(CONFIG_KMEMCHECK),y)
 	KBUILD_CFLAGS += $(call cc-option,-fno-builtin-memcpy)
 endif
 
+ifneq ($(cc-name),clang)
 #
 # If the function graph tracer is used with mcount instead of fentry,
 # '-maccumulate-outgoing-args' is needed to prevent a GCC bug
@@ -182,6 +185,9 @@ ifeq ($(ACCUMULATE_OUTGOING_ARGS), 1)
 	KBUILD_CFLAGS += -maccumulate-outgoing-args
 endif
 
+#compiler clang
+endif
+
 # Stackpointer is addressed different for 32 bit and 64 bit x86
 sp-$(CONFIG_X86_32) := esp
 sp-$(CONFIG_X86_64) := rsp
@@ -211,7 +217,6 @@ LDFLAGS := -m elf_$(UTS_MACHINE)
 KBUILD_CFLAGS += -pipe
 # Workaround for a gcc prelease that unfortunately was shipped in a suse release
 KBUILD_CFLAGS += -Wno-sign-compare
-#
 KBUILD_CFLAGS += -fno-asynchronous-unwind-tables
 
 KBUILD_CFLAGS += $(mflags-y)
